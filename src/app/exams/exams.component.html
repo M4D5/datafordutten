@@ -1,0 +1,35 @@
+<div class="bg-light py-5">
+    <div class="container">
+        <h1 class="mb-4">Exams</h1>
+        <div class="card shadow mb-5">
+            <div class="card-body">
+                <div class="text-danger">
+                    <p class="lead mb-0">Disclaimer</p>
+                    <p>Don't rely on this page for the real date of your exam. The purpose here is to give you a general
+                        idea of
+                        when and how long your exam period is.</p>
+                </div>
+                <p class="text-muted">
+                    The exam dates for a course are found using the following sources, ordered by priority
+                </p>
+                <ul class="text-muted">
+                    <li>Explicitly stated exam dates for the course (Mat 1, for example)</li>
+                    <li>The exam date for the course's "Exam Placement"</li>
+                    <li>The exam date for the course's "Schedule Placement"</li>
+                </ul>
+            </div>
+        </div>
+        <div class="card shadow mb-5">
+            <div class="card-body">
+                <div class="d-flex align-items-baseline mb-3">
+                    <div class="flex-grow-1">
+                        <app-search-text [dataTable]="dataTable" objectName="Courses"
+                                         class="text-muted"></app-search-text>
+                    </div>
+                    <app-search-bar [dataTable]="dataTable"></app-search-bar>
+                </div>
+                <app-data-table #dataTable [dataProvider]="this" [tableDefinition]="tableDef"></app-data-table>
+            </div>
+        </div>
+    </div>
+</div>

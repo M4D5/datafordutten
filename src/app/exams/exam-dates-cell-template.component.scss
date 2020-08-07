@@ -1,0 +1,19 @@
+#exam-date {
+  padding: 0.5em;
+  color: white;
+  font-weight: bold;
+  border-radius: 0.25em;
+  display: inline-block;
+  margin-bottom: 0.5em;
+  margin-right: 0.5em;
+}
+
+.exam-date-e {
+  @extend #exam-date;;
+  background-color: #45c4e2;
+}
+
+.exam-date-f {
+  @extend #exam-date;
+  background-color: #ffa379;
+}

@@ -1,0 +1,17 @@
+<div class="bg-light py-5">
+    <div class="container">
+        <h1 class="mb-4">Courses</h1>
+        <div class="card shadow mb-5">
+            <div class="card-body">
+                <div class="d-flex align-items-baseline mb-3">
+                    <div class="flex-grow-1">
+                        <app-search-text [dataTable]="dataTable" objectName="Courses"
+                                         class="text-muted"></app-search-text>
+                    </div>
+                    <app-search-bar [dataTable]="dataTable"></app-search-bar>
+                </div>
+                <app-data-table #dataTable [dataProvider]="this" [tableDefinition]="tableDef"></app-data-table>
+            </div>
+        </div>
+    </div>
+</div>

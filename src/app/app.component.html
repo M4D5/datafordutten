@@ -1,0 +1,35 @@
+<div class="bg-dark" style="width: 100vw; height: 100vh; position: fixed; z-index: -1">
+</div>
+<div class="container">
+    <nav class="navbar navbar-expand navbar-dark bg-dark">
+        <a class="navbar-brand" routerLink="/">
+            <img src="assets/icon128.png" width="30" height="30" class="d-inline-block align-top"
+                 alt="Data for Dutten Logo">
+        </a>
+        <div id="navbarNav" class="navbar-collapse">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" routerLink="/" routerLinkActive="active"
+                       [routerLinkActiveOptions]="{exact: true}">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" routerLink="/guide" routerLinkActive="active">Guide</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" routerLink="/courses" routerLinkActive="active">Courses</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" routerLink="/exams" routerLinkActive="active">Exams</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</div>
+<div [@fadeAnimation]="getRouterOutletState()">
+    <router-outlet></router-outlet>
+</div>
+<div class="py-5 bg-dark text-light">
+    <div class="container text-center">
+        <small>Maintained by <a class="text-light" href="https://www.linkedin.com/in/mads-kahler/">Mads Kahler</a> - original idea by <a class="text-light" href="https://github.com/OskarNS">OskarNS</a></small>
+    </div>
+</div>

@@ -1,0 +1,16 @@
+.loading-overlay {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  z-index: 999;
+  background-color: #ffffffaa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loading-icon {
+  width: 3em;
+  height: 3em;
+  font-size: 2em
+}

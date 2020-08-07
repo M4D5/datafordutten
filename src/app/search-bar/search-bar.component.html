@@ -1,0 +1,8 @@
+<div class="position-relative">
+    <span class="position-absolute text-light" style="right: 1em; top: 0.5em">
+        <fa-icon [icon]="faSearch"></fa-icon>
+    </span>
+    <!--suppress HtmlFormInputWithoutLabel -->
+    <input type="text" class="form-control form-control-sm bg-dark text-light"
+           [(ngModel)]="searchTerm" (ngModelChange)="search()" placeholder="Search...">
+</div>

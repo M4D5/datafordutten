@@ -1,0 +1,56 @@
+<div class="alert alert-warning" *ngIf="noData">
+    <p class="lead mb-0">No Data</p>
+    <p class="mb-0">No data provided for table</p>
+</div>
+<div class="position-relative">
+    <app-loading-overlay [visible]="loading"></app-loading-overlay>
+    <div *ngIf="!noData">
+        <table class="table mb-0">
+            <thead>
+            <tr>
+                <th scope="col" (click)="advanceSort(getPropertyName(col))"
+                    [class.clickable]="col.sortable"
+                    [class.text-primary]="hasSortIcon(getPropertyName(col))"
+                    *ngFor="let col of tableDefinition.columns">
+                    <span [innerHTML]="col.title"></span>
+                    <span class="ml-2" *ngIf="hasSortIcon(getPropertyName(col)) && col.sortable">
+                        <fa-icon [icon]="getSortIcon(getPropertyName(col))"></fa-icon>
+                    </span>
+                </th>
+            </tr>
+            </thead>
+            <tbody *ngIf="tableData">
+            <tr *ngFor="let value of tableData.rowValues">
+                <ng-template tableCellHost [col]="col" [rowValue]="value" *ngFor="let col of tableDefinition.columns">
+                </ng-template>
+            </tr>
+            </tbody>
+        </table>
+        <div *ngIf="loading && !tableData" style="height: 32em">&nbsp;</div>
+        <div *ngIf="!noData && !loading && tableData && tableData.rowValues.length === 0" class="text-center my-3">
+            <p class="lead">The search yielded no results</p>
+        </div>
+        <hr class="mt-0">
+        <div class="px-2 d-flex align-items-baseline">
+            <div class="text-muted flex-grow-1">
+                Page {{page + 1}} of {{tableData?.matchingPages}}
+            </div>
+            <div class="text-center">
+                <app-pagination [dataTable]="this"></app-pagination>
+            </div>
+            <div class="flex-grow-1 text-right">
+                <div class="btn-group btn-group-sm">
+                    <button type="button" class="btn btn-dark" [class.active]="pageSize === 10"
+                            (click)="setPageSize(10)">10
+                    </button>
+                    <button type="button" class="btn btn-dark" [class.active]="pageSize === 25"
+                            (click)="setPageSize(25)">25
+                    </button>
+                    <button type="button" class="btn btn-dark" [class.active]="pageSize === 50"
+                            (click)="setPageSize(50)">50
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
