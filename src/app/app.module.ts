@@ -21,6 +21,9 @@ import {BackgroundColorCellTemplateComponent} from './courses/background-color-c
 import { PaginationComponent } from './data-table/pagination/pagination.component';
 import { LoadingOverlayComponent } from './data-table/loading-overlay/loading-overlay.component';
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+import { CourseCardComponent } from './course-card/course-card.component';
+import { CourseCardListComponent } from './course-card-list/course-card-list.component';
+import {BsDropdownModule} from "ngx-bootstrap/dropdown";
 
 @NgModule({
     declarations: [
@@ -38,7 +41,9 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
         CoursesComponent,
         BackgroundColorCellTemplateComponent,
         PaginationComponent,
-        LoadingOverlayComponent
+        LoadingOverlayComponent,
+        CourseCardComponent,
+        CourseCardListComponent
     ],
     imports: [
         BrowserModule,
@@ -46,7 +51,8 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
         AppRoutingModule,
         FontAwesomeModule,
         HttpClientModule,
-        FormsModule
+        FormsModule,
+        BsDropdownModule.forRoot()
     ],
     providers: [],
     bootstrap: [AppComponent]

@@ -1,0 +1,38 @@
+<div class="card shadow mb-4">
+    <div class="card-body">
+        <a [href]="getCourseLink()" class="lead">{{course ? course.courseName : 'Missing Course'}}</a>
+        <p class="mb-0">{{course ? course.courseNumber : 'No Course Number'}}</p>
+    </div>
+    <ul class="list-group list-group-flush">
+        <li class="list-group-item d-flex"
+            [style.background-color]="getPercentPassedBackgroundColor(course.percentPassed)">
+            <div class="flex-1">Passed</div>
+            <div class="flex-1">{{formatPercent(course.percentPassed)}}</div>
+        </li>
+        <li class="list-group-item d-flex"
+            [style.background-color]="getAverageGradeBackgroundColor(course.averageGrade)">
+            <div class="flex-1">Grade</div>
+            <div class="flex-1">{{course.averageGrade ? course.averageGrade : 'No Data'}}</div>
+        </li>
+        <li class="list-group-item d-flex"
+            [style.background-color]="getDefaultBackgroundColor(course.averageGradePercentile)">
+            <div class="flex-1">Grade %</div>
+            <div class="flex-1">{{formatPercent(course.averageGradePercentile)}}</div>
+        </li>
+        <li class="list-group-item d-flex"
+            [style.background-color]="getDefaultBackgroundColor(course.qualityScorePercentile)">
+            <div class="flex-1">Rating %</div>
+            <div class="flex-1">{{formatPercent(course.qualityScorePercentile)}}</div>
+        </li>
+        <li class="list-group-item d-flex"
+            [style.background-color]="getDefaultBackgroundColor(course.workloadScorePercentile)">
+            <div class="flex-1">Workscore %</div>
+            <div class="flex-1">{{formatPercent(course.workloadScorePercentile)}}</div>
+        </li>
+        <li class="list-group-item d-flex"
+            [style.background-color]="getDefaultBackgroundColor(course.lazyScorePercentile)">
+            <div class="flex-1">Lazyscore %</div>
+            <div class="flex-1">{{formatPercent(course.lazyScorePercentile)}}</div>
+        </li>
+    </ul>
+</div>

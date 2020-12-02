@@ -1,7 +1,6 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {TableDataProvider} from "../data-table/table-data-provider";
 import {forkJoin, Observable, of} from "rxjs";
-import {Sort} from "../model/sort";
 import {ColumnDefinition, TableDefinition} from "../data-table/table-definition";
 import {CourseWithExamDates} from "../model/course-with-exam-dates";
 import {HttpClient} from "@angular/common/http";
@@ -12,8 +11,8 @@ import {map, tap} from "rxjs/operators";
 import {TableData} from "../data-table/table-data";
 import {CourseLinkCellTemplateComponent} from "../course-link-cell-template.component";
 import {ExamDatesCellTemplateComponent} from "./exam-dates-cell-template.component";
-import {TableFilter} from "../data-table/table-filter";
-import {TablePageRequest} from "../data-table/table-page-request";
+import {DataRequestHolder} from "../data-table/data-request-holder";
+import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
     selector: 'app-exams',
@@ -35,7 +34,10 @@ export class ExamsComponent implements TableDataProvider {
         }),
     ]);
 
-    constructor(private httpClient: HttpClient) {
+    dataRequestHolder: DataRequestHolder;
+
+    constructor(private httpClient: HttpClient, private router: Router, private activatedRoute: ActivatedRoute) {
+        this.dataRequestHolder = new DataRequestHolder(router, activatedRoute);
     }
 
     loadData(): Observable<CourseWithExamDates[]> {
@@ -54,7 +56,7 @@ export class ExamsComponent implements TableDataProvider {
     copyToMap<B>(obj: any) {
         const map = new Map<string, B>();
 
-        for(let entry of Object.entries(obj)) {
+        for (let entry of Object.entries(obj)) {
             map.set(entry[0], <B>entry[1]);
         }
 
@@ -70,7 +72,7 @@ export class ExamsComponent implements TableDataProvider {
             const courseExceptions = [];
 
             for (let examScheduleEntry of examSchedules.entries()) {
-                if(!examScheduleEntry[1].courseExceptions) {
+                if (!examScheduleEntry[1].courseExceptions) {
                     continue;
                 }
 
@@ -110,7 +112,7 @@ export class ExamsComponent implements TableDataProvider {
 
         for (let examSchedule of examSchedules) {
             for (let placement of placements) {
-                if(!examSchedule.schedulePlacementMappings) {
+                if (!examSchedule.schedulePlacementMappings) {
                     continue;
                 }
 
@@ -131,13 +133,13 @@ export class ExamsComponent implements TableDataProvider {
         return examDates;
     }
 
-    getData(sort?: Sort, filter?: TableFilter, page?: TablePageRequest): Observable<TableData> {
+    getData(requestHolder: DataRequestHolder): Observable<TableData> {
         if (!this.data) {
             return this.loadData()
                 .pipe(tap(d => this.data = d))
-                .pipe(map(d => CourseUtils.prepareCourses(sort, filter, page, d)))
+                .pipe(map(d => CourseUtils.prepareCourses(requestHolder, d)))
         }
 
-        return of(CourseUtils.prepareCourses(sort, filter, page, this.data));
+        return of(CourseUtils.prepareCourses(requestHolder, this.data));
     }
 }

@@ -1,6 +1,7 @@
 import {Component, Input} from '@angular/core';
-import {DataTableComponent} from "../data-table.component";
 import {faBackward, faCaretLeft, faCaretRight, faForward} from "@fortawesome/free-solid-svg-icons"
+import {DataRequestHolder} from "../data-request-holder";
+import {ComponentWithTableData} from "../component-with-table-data";
 
 @Component({
     selector: 'app-pagination',
@@ -14,11 +15,14 @@ export class PaginationComponent {
     faBackward = faBackward;
 
     @Input()
-    dataTable: DataTableComponent;
+    requestHolder: DataRequestHolder;
+
+    @Input()
+    componentWithTableData: ComponentWithTableData;
 
     get paginationPages(): number[] {
         const width = 5;
-        let startIndex = (this.dataTable.page + 1) - Math.floor(width / 2);
+        let startIndex = (this.requestHolder.page + 1) - Math.floor(width / 2);
 
         if (startIndex < 1) {
             startIndex = 1;
@@ -26,10 +30,10 @@ export class PaginationComponent {
 
         let endIndex = startIndex + width;
 
-        if (!this.dataTable.tableData) {
+        if (!this.componentWithTableData) {
             endIndex = 1;
-        } else if (endIndex >= this.dataTable.tableData.matchingPages + 1) {
-            endIndex = this.dataTable.tableData.matchingPages + 1;
+        } else if (endIndex >= this.componentWithTableData.getTableData()?.matchingPages + 1) {
+            endIndex = this.componentWithTableData.getTableData()?.matchingPages + 1;
         }
 
         const result = [];
@@ -39,5 +43,17 @@ export class PaginationComponent {
         }
 
         return result;
+    }
+
+    get hasNext() {
+        const tableData = this.componentWithTableData.getTableData();
+
+        if(!tableData || tableData.matchingPages === 0) return false;
+
+        return this.requestHolder.page !== tableData.matchingPages - 1
+    }
+
+    get hasPrev() {
+        return this.requestHolder.page > 0;
     }
 }

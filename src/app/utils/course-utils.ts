@@ -1,7 +1,8 @@
 import {compareCourses, Course} from "../model/course";
 import {Sort, SortDirection} from "../model/sort";
-import {TableFilter} from "../data-table/table-filter";
-import {TablePageRequest} from "../data-table/table-page-request";
+import {RequestFilter} from "../data-table/request-filter";
+import {PageRequest} from "../data-table/page-request";
+import {DataRequestHolder} from "../data-table/data-request-holder";
 
 export class CourseUtils {
     static convertCoursesToList(courses: any): Course[] {
@@ -34,20 +35,20 @@ export class CourseUtils {
         }
     }
 
-    static prepareCourses(sort: Sort, filter: TableFilter, pageRequest: TablePageRequest, data: Course[]) {
-        const filteredCourses = this.filterCourses(filter, data);
-        const sortedCourses = CourseUtils.sortCourses(sort, filteredCourses);
-        const pagedCourses = sortedCourses.slice(pageRequest.page * pageRequest.pageSize, (pageRequest.page + 1) * pageRequest.pageSize);
+    static prepareCourses(dataRequest: DataRequestHolder, data: Course[]) {
+        const filteredCourses = this.filterCourses(dataRequest.filter, data);
+        const sortedCourses = CourseUtils.sortCourses(dataRequest.sortOptions, filteredCourses);
+        const pagedCourses = sortedCourses.slice(dataRequest.page * dataRequest.pageSize, (dataRequest.page + 1) * dataRequest.pageSize);
 
         return {
             totalRows: data.length,
             rowValues: pagedCourses,
             matchingRows: filteredCourses.length,
-            matchingPages: Math.ceil(filteredCourses.length / pageRequest.pageSize)
+            matchingPages: Math.ceil(filteredCourses.length / dataRequest.pageSize)
         };
     }
 
-    static filterCourses(filter: TableFilter, data: Course[]) {
+    static filterCourses(filter: RequestFilter, data: Course[]) {
         let filteredData = data;
 
         if (filter && filter.globalSearchTerm) {

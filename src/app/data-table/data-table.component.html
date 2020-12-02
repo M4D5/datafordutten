@@ -31,22 +31,27 @@
             <p class="lead">The search yielded no results</p>
         </div>
         <hr class="mt-0">
-        <div class="px-2 d-flex align-items-baseline">
-            <div class="text-muted flex-grow-1">
-                Page {{page + 1}} of {{tableData?.matchingPages}}
+        <div class="row align-items-center">
+            <div class="text-muted col-md text-center text-md-left">
+                <div class="mb-2 mb-md-0">
+                    Page {{dataRequestHolder.page + 1}} of {{tableData?.matchingPages}}
+                </div>
             </div>
-            <div class="text-center">
-                <app-pagination [dataTable]="this"></app-pagination>
+            <div class="col-md">
+                <div class="mb-3 mb-md-0">
+                    <app-pagination [requestHolder]="dataRequestHolder"
+                                    [componentWithTableData]="this"></app-pagination>
+                </div>
             </div>
-            <div class="flex-grow-1 text-right">
+            <div class="text-center text-md-right col-md">
                 <div class="btn-group btn-group-sm">
-                    <button type="button" class="btn btn-dark" [class.active]="pageSize === 10"
+                    <button type="button" class="btn btn-dark" [class.active]="dataRequestHolder.pageSize === 10"
                             (click)="setPageSize(10)">10
                     </button>
-                    <button type="button" class="btn btn-dark" [class.active]="pageSize === 25"
+                    <button type="button" class="btn btn-dark" [class.active]="dataRequestHolder.pageSize === 25"
                             (click)="setPageSize(25)">25
                     </button>
-                    <button type="button" class="btn btn-dark" [class.active]="pageSize === 50"
+                    <button type="button" class="btn btn-dark" [class.active]="dataRequestHolder.pageSize === 50"
                             (click)="setPageSize(50)">50
                     </button>
                 </div>

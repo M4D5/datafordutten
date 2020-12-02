@@ -4,6 +4,6 @@ export interface Sort {
 }
 
 export enum SortDirection {
-    Ascending,
-    Descending
+    Ascending="ASC",
+    Descending="DESC"
 }

@@ -1,4 +1,4 @@
-export interface TablePageRequest {
+export interface PageRequest {
     page: number;
     pageSize: number;
 }

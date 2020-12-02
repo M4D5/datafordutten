@@ -1,10 +1,8 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {faSearch} from "@fortawesome/free-solid-svg-icons";
 import {Subject} from "rxjs";
-import {debounceTime} from "rxjs/operators";
-import {DataTableComponent} from "../data-table/data-table.component";
-import {ActivatedRoute} from "@angular/router";
-import {TableFilter} from "../data-table/table-filter";
+import {debounceTime, map} from "rxjs/operators";
+import {DataRequestHolder} from "../data-table/data-request-holder";
 
 @Component({
     selector: 'app-search-bar',
@@ -15,29 +13,22 @@ export class SearchBarComponent implements OnInit {
     faSearch = faSearch;
 
     @Input()
-    dataTable: DataTableComponent;
+    dataRequestHolder: DataRequestHolder;
 
     searchTerm: string;
     subject: Subject<string> = new Subject<string>();
 
-    constructor(private activatedRoute: ActivatedRoute) {
+    constructor() {
     }
 
     ngOnInit(): void {
-        const filterStr = this.activatedRoute.snapshot.queryParams.filter;
+        this.searchTerm = this.dataRequestHolder.globalSearchTerm;
 
-        if(filterStr) {
-            const filter: TableFilter = JSON.parse(filterStr);
-            this.searchTerm = filter.globalSearchTerm;
-        }
+        this.dataRequestHolder.onUpdate.subscribe(r => this.searchTerm = r.globalSearchTerm);
 
         this.subject
-            .pipe(debounceTime(300))
-            .subscribe(r => {
-                if (this.dataTable) {
-                    this.dataTable.updateGlobalSearchTerm(r);
-                }
-            });
+            .pipe(debounceTime(300), map(r => r ? r : undefined))
+            .subscribe(r => this.dataRequestHolder.globalSearchTerm = r);
     }
 
     search() {

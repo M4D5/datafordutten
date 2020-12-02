@@ -1,6 +1,27 @@
 import {Utils} from "./utils";
 
 export class ColorUtils {
+    static readonly defaultColorRange = {
+        minHue: 0,
+        maxHue: 120,
+        minValue: 0,
+        maxValue: 100
+    };
+
+    static readonly percentPassedColorRange = {
+        minHue: 0,
+        maxHue: 120,
+        minValue: 50,
+        maxValue: 100
+    };
+
+    static readonly averageGradeColorRange = {
+        minHue: 0,
+        maxHue: 120,
+        minValue: 2,
+        maxValue: 12
+    };
+
     /**
      * Returns the hsl color string for the value using the specified color range.
      */

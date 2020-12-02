@@ -1,5 +1,5 @@
 import {Component, Input} from '@angular/core';
-import {DataTableComponent} from "../data-table/data-table.component";
+import {ComponentWithTableData} from "../data-table/component-with-table-data";
 
 @Component({
     selector: 'app-search-text',
@@ -8,20 +8,20 @@ import {DataTableComponent} from "../data-table/data-table.component";
 })
 export class SearchTextComponent {
     @Input()
-    dataTable: DataTableComponent;
+    componentWithTableData: ComponentWithTableData;
 
     @Input()
     objectName: string = 'Entries';
 
     get shown(): number {
-        return this.dataTable.tableData?.rowValues.length;
+        return this.componentWithTableData?.getTableData().rowValues.length;
     }
 
     get matching(): number {
-        return this.dataTable.tableData?.matchingRows;
+        return this.componentWithTableData?.getTableData().matchingRows;
     }
 
     get visible(): boolean {
-        return !!this.dataTable.tableData;
+        return !!this.componentWithTableData?.getTableData();
     }
 }

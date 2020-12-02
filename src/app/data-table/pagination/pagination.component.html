@@ -1,27 +1,28 @@
-<nav *ngIf="dataTable">
-    <ul class="pagination pagination-sm mb-0">
-        <li class="page-item" [class.disabled]="dataTable.page === 0">
-            <button class="page-link" (click)="dataTable.goToPage(0)">
+<nav *ngIf="requestHolder">
+    <ul class="pagination pagination-sm mb-0 justify-content-center">
+        <li class="page-item" [class.disabled]="!hasPrev">
+            <button class="page-link" (click)="requestHolder.page = 0">
                 <fa-icon [icon]="faBackward"></fa-icon>
             </button>
         </li>
-        <li class="page-item" [class.disabled]="dataTable.page === 0">
-            <button class="page-link" (click)="dataTable.advancePage(-1)">
+        <li class="page-item" [class.disabled]="!hasPrev">
+            <button class="page-link" (click)="requestHolder.advancePage(-1)">
                 <fa-icon [icon]="faCaretLeft"></fa-icon>
             </button>
         </li>
-        <li class="page-item" [class.active]="dataTable.page === (i - 1)" *ngFor="let i of paginationPages">
-            <button class="page-link" (click)="dataTable.goToPage(i - 1)">{{i}}</button>
+        <li class="page-item" [class.active]="requestHolder.page === (i - 1)" *ngFor="let i of paginationPages">
+            <button class="page-link" (click)="requestHolder.page = (i - 1)">{{i}}</button>
         </li>
-        <li class="page-item" [class.disabled]="dataTable.tableData && dataTable.page === dataTable.tableData.matchingPages - 1">
-            <button class="page-link" (click)="dataTable.advancePage(1)">
+        <li class="page-item" [class.disabled]="!hasNext">
+            <button class="page-link" (click)="requestHolder.advancePage(1)">
                 <fa-icon [icon]="faCaretRight"></fa-icon>
             </button>
         </li>
-        <li class="page-item" [class.disabled]="dataTable.tableData && dataTable.page === dataTable.tableData.matchingPages - 1">
-            <button class="page-link" (click)="dataTable.goToPage(dataTable.tableData.matchingPages - 1)">
+        <li class="page-item" [class.disabled]="!hasNext">
+            <button class="page-link" (click)="requestHolder.page = (componentWithTableData.getTableData().matchingPages - 1)">
                 <fa-icon [icon]="faForward"></fa-icon>
             </button>
         </li>
     </ul>
 </nav>
+

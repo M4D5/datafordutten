@@ -1,22 +1,20 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {TableData} from "./table-data";
 import {TableDataProvider} from "./table-data-provider";
-import {Sort, SortDirection} from "../model/sort";
+import {SortDirection} from "../model/sort";
 import {ColumnDefinition, TableDefinition} from "./table-definition";
 import {faCaretDown, faCaretUp} from "@fortawesome/free-solid-svg-icons";
 import {delay} from "rxjs/operators";
 import {Subscription} from "rxjs";
-import {TableFilter} from "./table-filter";
-import {ActivatedRoute, Router} from "@angular/router";
-import {Utils} from "../utils/utils";
-import {TablePageRequest} from "./table-page-request";
+import {DataRequestHolder} from "./data-request-holder";
+import {ComponentWithTableData} from "./component-with-table-data";
 
 @Component({
     selector: 'app-data-table',
     templateUrl: './data-table.component.html',
     styleUrls: ['./data-table.component.scss']
 })
-export class DataTableComponent implements OnInit, OnDestroy {
+export class DataTableComponent implements OnInit, OnDestroy, ComponentWithTableData {
     loading = false;
 
     noData = false;
@@ -28,15 +26,14 @@ export class DataTableComponent implements OnInit, OnDestroy {
     tableDefinition: TableDefinition<any>;
 
     tableData: TableData;
-    sortOptions: Sort;
 
-    filter: TableFilter;
-    page: number = 0;
+    @Input()
+    dataRequestHolder: DataRequestHolder;
 
-    pageSize: number = 10;
     dataUpdateSubscription: Subscription;
 
-    constructor(private activatedRoute: ActivatedRoute, private router: Router) {
+    getTableData(): TableData {
+        return this.tableData;
     }
 
     ngOnInit(): void {
@@ -47,56 +44,14 @@ export class DataTableComponent implements OnInit, OnDestroy {
 
         this.checkPropertyNames();
 
-        this.filter = this.recoverFilter();
-        this.sortOptions = this.recoverSortOptions();
-        const pageOptions = this.recoverPageOptions();
-
-        if (pageOptions) {
-            this.page = pageOptions.page;
-            this.pageSize = pageOptions.pageSize;
-        }
-
         this.refresh();
 
         if (this.dataProvider.updatesEmitter) {
             this.dataUpdateSubscription = this.dataProvider.updatesEmitter()
                 .subscribe(d => this.tableData = d);
         }
-    }
 
-    recoverFilter(): TableFilter {
-        const filter: TableFilter = Utils.getQueryParameterAndParse(this.activatedRoute, 'filter');
-
-        if (!filter) {
-            return {globalSearchTerm: undefined};
-        }
-
-        return filter;
-    }
-
-    persistFilter() {
-        Utils.updateQueryParameters(this.router, this.activatedRoute, {filter: JSON.stringify(this.filter)});
-    }
-
-    recoverSortOptions(): Sort {
-        return Utils.getQueryParameterAndParse(this.activatedRoute, 'sortOptions');
-    }
-
-    persistSortOptions() {
-        Utils.updateQueryParameters(this.router, this.activatedRoute, {sortOptions: JSON.stringify(this.sortOptions)});
-    }
-
-    recoverPageOptions(): TablePageRequest {
-        return Utils.getQueryParameterAndParse(this.activatedRoute, 'pageOptions');
-    }
-
-    persistPageOptions() {
-        Utils.updateQueryParameters(this.router, this.activatedRoute, {
-            pageOptions: JSON.stringify({
-                page: this.page,
-                pageSize: this.pageSize
-            })
-        });
+        this.dataRequestHolder.onUpdate.subscribe(_ => this.refresh());
     }
 
     ngOnDestroy(): void {
@@ -105,22 +60,16 @@ export class DataTableComponent implements OnInit, OnDestroy {
         }
     }
 
-    public updateGlobalSearchTerm(term: string) {
-        this.filter.globalSearchTerm = term;
-        this.persistFilter();
-        this.refresh();
-    }
-
     hasSortIcon(property: string) {
-        return this.sortOptions && this.sortOptions.property === property;
+        return this.dataRequestHolder.sortProperty === property;
     }
 
     getSortIcon(property: string) {
-        if (!this.sortOptions || this.sortOptions.property !== property) {
+        if (this.dataRequestHolder.sortProperty !== property) {
             throw 'The column must be sorted on in order to get the sort icon';
         }
 
-        if (this.sortOptions.direction === SortDirection.Ascending) {
+        if (this.dataRequestHolder.sortDirection === SortDirection.Ascending) {
             return faCaretUp;
         } else {
             return faCaretDown;
@@ -135,7 +84,7 @@ export class DataTableComponent implements OnInit, OnDestroy {
 
     getPropertyName(column: ColumnDefinition<any>): string {
         if (!column.sortable) {
-            return undefined;
+            return null;
         }
 
         if (column.propertyName) {
@@ -171,44 +120,36 @@ export class DataTableComponent implements OnInit, OnDestroy {
             return;
         }
 
-        if (this.sortOptions && this.sortOptions.property === property) {
-            if (this.sortOptions.direction === SortDirection.Ascending) {
-                this.sortOptions = {property: property, direction: SortDirection.Descending};
-            } else if (this.sortOptions.direction === SortDirection.Descending) {
-                this.sortOptions = undefined;
+        if (this.dataRequestHolder.sortProperty === property) {
+            if (this.dataRequestHolder.sortDirection === SortDirection.Ascending) {
+                this.dataRequestHolder.sortOptions = {property: property, direction: SortDirection.Descending};
+            } else if (this.dataRequestHolder.sortOptions.direction === SortDirection.Descending) {
+                this.dataRequestHolder.sortOptions = undefined;
             }
         } else {
-            this.sortOptions = {property: property, direction: SortDirection.Ascending};
+            this.dataRequestHolder.sortOptions = {property: property, direction: SortDirection.Ascending};
         }
 
-        this.persistSortOptions();
-        this.page = 0;
+        this.dataRequestHolder.page = 0;
         this.refresh();
     }
 
     advancePage(by: number) {
-        if (this.page + by < 0 || this.page + by >= this.tableData.matchingPages) {
-            return;
-        }
-
-        this.page += by;
-        this.persistPageOptions();
+        this.dataRequestHolder.advancePage(by);
         this.refresh();
     }
 
     goToPage(page: number) {
-        if (page < 0 || page > this.tableData.matchingPages - 1 || this.page === page) {
+        if (page > this.tableData.matchingPages - 1 || this.dataRequestHolder.page === page) {
             return;
         }
 
-        this.page = page;
-        this.persistPageOptions();
+        this.dataRequestHolder.page = page;
         this.refresh();
     }
 
     setPageSize(size: number) {
-        this.pageSize = size;
-        this.persistPageOptions();
+        this.dataRequestHolder.pageSize = size;
         this.refresh();
     }
 
@@ -216,10 +157,7 @@ export class DataTableComponent implements OnInit, OnDestroy {
         this.loading = true;
         this.noData = false;
 
-        const dataObservable = this.dataProvider.getData(this.sortOptions, this.filter, {
-            page: this.page,
-            pageSize: this.pageSize
-        });
+        const dataObservable = this.dataProvider.getData(this.dataRequestHolder);
 
         if (!dataObservable) {
             this.loading = false;
@@ -243,15 +181,19 @@ export class DataTableComponent implements OnInit, OnDestroy {
     updateTableData(tableData: TableData) {
         this.tableData = tableData;
 
-        if (this.page > tableData.matchingPages - 1) {
-            this.goToPage(tableData.matchingPages - 1);
-            return;
-        }
+        if(this.dataRequestHolder.page === -1 && tableData.matchingPages > 0) {
+            this.goToPage(0);
+        } else if (this.dataRequestHolder.page !== 0) {
+            if (this.dataRequestHolder.page > tableData.matchingPages - 1) {
+                this.goToPage(tableData.matchingPages - 1);
+                return;
+            }
 
-        if (this.page !== tableData.matchingPages - 1 && tableData.rowValues.length !== this.pageSize) {
-            console.error(`Expected data to have the same size as the page size (${this.pageSize}), but had ${tableData.rowValues.length}`);
-            this.noData = true;
-            return;
+            if (this.dataRequestHolder.page !== tableData.matchingPages - 1 && tableData.rowValues.length !== this.dataRequestHolder.pageSize) {
+                console.error(`Expected data to have the same size as the page size (${this.dataRequestHolder.pageSize}), but had ${tableData.rowValues.length}`);
+                this.noData = true;
+                return;
+            }
         }
     }
 }

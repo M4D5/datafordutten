@@ -23,12 +23,12 @@
             <div class="card-body">
                 <div class="d-flex align-items-baseline mb-3">
                     <div class="flex-grow-1">
-                        <app-search-text [dataTable]="dataTable" objectName="Courses"
+                        <app-search-text [componentWithTableData]="dataTable" objectName="Courses"
                                          class="text-muted"></app-search-text>
                     </div>
-                    <app-search-bar [dataTable]="dataTable"></app-search-bar>
+                    <app-search-bar [dataRequestHolder]="dataRequestHolder"></app-search-bar>
                 </div>
-                <app-data-table #dataTable [dataProvider]="this" [tableDefinition]="tableDef"></app-data-table>
+                <app-data-table #dataTable [dataProvider]="this" [dataRequestHolder]="dataRequestHolder" [tableDefinition]="tableDef"></app-data-table>
             </div>
         </div>
     </div>

@@ -1,0 +1,10 @@
+<div class="position-relative">
+    <app-loading-overlay [visible]="loading"></app-loading-overlay>
+    <div *ngIf="tableData">
+        <app-course-card *ngFor="let course of tableData.rowValues" [course]="course"></app-course-card>
+    </div>
+    <div *ngIf="loading && !tableData" style="height: 72em">&nbsp;</div>
+</div>
+<div *ngIf="!noData && !loading && tableData && tableData.rowValues.length === 0" class="text-center my-5">
+    <p class="lead">The search yielded no results</p>
+</div>

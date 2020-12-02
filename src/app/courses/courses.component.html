@@ -1,17 +1,88 @@
 <div class="bg-light py-5">
     <div class="container">
         <h1 class="mb-4">Courses</h1>
-        <div class="card shadow mb-5">
+        <div [class.d-none]="(onWindowResized | async)?.width >= responsiveBreakpoint">
+            <div class="row align-items-center mb-3">
+                <div class="col-md-6 order-2 order-md-0 text-center text-md-left">
+                    <app-search-text [componentWithTableData]="courseCardList" objectName="Courses"></app-search-text>
+                </div>
+                <div class="col-md-6 order-1 mb-2 mb-md-0 d-flex align-items-center">
+                    <div class="btn-group mr-3" dropdown>
+                        <div class="clickable text-primary" dropdownToggle>
+                            <fa-icon size="lg" [icon]="faSort"></fa-icon>
+                        </div>
+                        <ul *dropdownMenu class="dropdown-menu">
+                            <li>
+                                <a class="dropdown-item clickable"
+                                   [class.active]="dataRequestHolder.sortProperty === undefined"
+                                   (click)="dataRequestHolder.sortOptions = undefined">{{courseDisplayNames['undefined']}}</a>
+                            </li>
+                            <ng-container
+                                    *ngTemplateOutlet="sortDropdownItem; context: {property: 'averageGrade'}"></ng-container>
+                            <ng-container
+                                    *ngTemplateOutlet="sortDropdownItem; context: {property: 'averageGradePercentile'}"></ng-container>
+                            <ng-container
+                                    *ngTemplateOutlet="sortDropdownItem; context: {property: 'qualityScorePercentile'}"></ng-container>
+                            <ng-container
+                                    *ngTemplateOutlet="sortDropdownItem; context: {property: 'workloadScorePercentile'}"></ng-container>
+                            <ng-container
+                                    *ngTemplateOutlet="sortDropdownItem; context: {property: 'lazyScorePercentile'}"></ng-container>
+                        </ul>
+                    </div>
+                    <app-search-bar [dataRequestHolder]="dataRequestHolder" class="flex-grow-1"></app-search-bar>
+                </div>
+            </div>
+            <app-course-card-list #courseCardList [dataRequestHolder]="dataRequestHolder"
+                                  [dataProvider]="this"></app-course-card-list>
+            <div class="row align-items-center">
+                <div class="text-muted col-md text-center text-md-left">
+                    <div class="mb-2 mb-md-0">
+                        Page {{dataRequestHolder.page + 1}} of {{courseCardList?.tableData?.matchingPages}}
+                    </div>
+                </div>
+                <div class="col-md">
+                    <div class="mb-3 mb-md-0">
+                        <app-pagination [requestHolder]="dataRequestHolder"
+                                        [componentWithTableData]="courseCardList"></app-pagination>
+                    </div>
+                </div>
+                <div class="text-center text-md-right col-md">
+                    <div class="btn-group btn-group-sm">
+                        <button type="button" class="btn btn-dark" [class.active]="dataRequestHolder.pageSize === 5"
+                                (click)="dataRequestHolder.pageSize = 5">5
+                        </button>
+                        <button type="button" class="btn btn-dark" [class.active]="dataRequestHolder.pageSize === 10"
+                                (click)="dataRequestHolder.pageSize = 10">10
+                        </button>
+                        <button type="button" class="btn btn-dark" [class.active]="dataRequestHolder.pageSize === 25"
+                                (click)="dataRequestHolder.pageSize = 25">25
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card shadow mb-5" [class.d-none]="(onWindowResized | async)?.width < responsiveBreakpoint">
             <div class="card-body">
                 <div class="d-flex align-items-baseline mb-3">
                     <div class="flex-grow-1">
-                        <app-search-text [dataTable]="dataTable" objectName="Courses"
+                        <app-search-text [componentWithTableData]="dataTable" objectName="Courses"
                                          class="text-muted"></app-search-text>
                     </div>
-                    <app-search-bar [dataTable]="dataTable"></app-search-bar>
+                    <app-search-bar [dataRequestHolder]="dataRequestHolder"></app-search-bar>
                 </div>
-                <app-data-table #dataTable [dataProvider]="this" [tableDefinition]="tableDef"></app-data-table>
+                <app-data-table #dataTable [dataProvider]="this" [dataRequestHolder]="dataRequestHolder"
+                                [tableDefinition]="tableDef"></app-data-table>
             </div>
         </div>
     </div>
 </div>
+
+<ng-template #sortDropdownItem let-property="property">
+    <li>
+        <a class="dropdown-item clickable"
+           (click)="dataRequestHolder.sortOptions = {direction: 0, property: property}"
+           [class.active]="dataRequestHolder.sortProperty === property">
+            {{courseDisplayNames[property]}}
+        </a>
+    </li>
+</ng-template>
