@@ -1,33 +1,6 @@
-// Lux 4.5.2
-// Bootswatch
-
-//
-// Color system
-//
-
-$white:    #fff !default;
-$gray-100: #f8f9fa !default;
-$gray-200: #f7f7f9 !default;
-$gray-300: #eceeef !default;
-$gray-400: #ced4da !default;
-$gray-500: #adb5bd !default;
-$gray-600: #919aa1 !default;
-$gray-700: #55595c !default;
-$gray-800: #343a40 !default;
-$gray-900: #1a1a1a !default;
-$black:    #000 !default;
-
-$yiq-contrasted-threshold:  185 !default;
-
-// Body
-
-$body-color:                $gray-700 !default;
-
-// Components
-
 // Cards
-$card-spacer-5: 1em;
 $card-spacer-x: 2em;
+$card-spacer-y: 2em;
 
 $card-border-width: 0;
 
@@ -71,19 +44,6 @@ $btn-font-weight:             600 !default;
 
 $input-line-height:                     1.5 !default;
 
-$input-bg:                              $gray-200 !default;
-$input-disabled-bg:                     $gray-300 !default;
-
-$input-group-addon-bg:                  $gray-300 !default;
-
-// Navbar
-
-$navbar-dark-hover-color:           $white !default;
-
-$navbar-light-color:                rgba($black,.3) !default;
-$navbar-light-hover-color:          $gray-900 !default;
-$navbar-light-active-color:         $gray-900 !default;
-
 // Pagination
 
 $pagination-border-color:           transparent !default;
@@ -93,7 +53,6 @@ $pagination-bg:                     rgba(0,0,0,0);
 $pagination-disabled-bg:            rgba(0,0,0,0);
 
 // Breadcrumbs
-
 $breadcrumb-bg:                     transparent !default;
 
 // Shadows
