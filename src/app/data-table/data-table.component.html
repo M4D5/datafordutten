@@ -13,7 +13,7 @@
                     [class.text-primary]="hasSortIcon(getPropertyName(col))"
                     *ngFor="let col of tableDefinition.columns">
                     <span [innerHTML]="col.title"></span>
-                    <span class="ml-2" *ngIf="hasSortIcon(getPropertyName(col)) && col.sortable">
+                    <span class="ms-2" *ngIf="hasSortIcon(getPropertyName(col)) && col.sortable">
                         <fa-icon [icon]="getSortIcon(getPropertyName(col))"></fa-icon>
                     </span>
                 </th>
@@ -30,31 +30,24 @@
         <div *ngIf="!noData && !loading && tableData && tableData.rowValues.length === 0" class="text-center my-3">
             <p class="lead">The search yielded no results</p>
         </div>
-        <hr class="mt-0">
-        <div class="row align-items-center">
-            <div class="text-muted col-md text-center text-md-left">
-                <div class="mb-2 mb-md-0">
-                    Page {{dataRequestHolder.page + 1}} of {{tableData?.matchingPages}}
-                </div>
+        <div class="d-flex align-items-center mt-3">
+            <div class="text-muted">
+                Page {{dataRequestHolder.page + 1}} of {{tableData?.matchingPages}}
             </div>
-            <div class="col-md">
-                <div class="mb-3 mb-md-0">
-                    <app-pagination [requestHolder]="dataRequestHolder"
-                                    [componentWithTableData]="this"></app-pagination>
-                </div>
+            <div class="text-center flex-grow-1">
+                <app-pagination [requestHolder]="dataRequestHolder"
+                                [componentWithTableData]="this"></app-pagination>
             </div>
-            <div class="text-center text-md-right col-md">
-                <div class="btn-group btn-group-sm">
-                    <button type="button" class="btn btn-dark" [class.active]="dataRequestHolder.pageSize === 10"
-                            (click)="setPageSize(10)">10
-                    </button>
-                    <button type="button" class="btn btn-dark" [class.active]="dataRequestHolder.pageSize === 25"
-                            (click)="setPageSize(25)">25
-                    </button>
-                    <button type="button" class="btn btn-dark" [class.active]="dataRequestHolder.pageSize === 50"
-                            (click)="setPageSize(50)">50
-                    </button>
-                </div>
+            <div class="btn-group btn-group-sm">
+                <button type="button" class="btn btn-dark" [class.active]="dataRequestHolder.pageSize === 10"
+                        (click)="setPageSize(10)">10
+                </button>
+                <button type="button" class="btn btn-dark" [class.active]="dataRequestHolder.pageSize === 25"
+                        (click)="setPageSize(25)">25
+                </button>
+                <button type="button" class="btn btn-dark" [class.active]="dataRequestHolder.pageSize === 50"
+                        (click)="setPageSize(50)">50
+                </button>
             </div>
         </div>
     </div>
